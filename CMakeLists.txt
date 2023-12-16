@@ -6,6 +6,4 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add an executable for your application
-add_executable(DirectoryIterator main.cpp)
-
-#link libraries TODO
+add_executable(DirectoryIterator main.cpp SetCover/fast_set_cover.cpp DomainManager/domain_manager.cpp)
