@@ -20,16 +20,27 @@
 #include "DomainManager/domain_manager.hpp"
 #include "FileManager/file_manager.hpp"
 
+
 int main(int argc, char* argv[]) {
   std::vector<std::string> args(argv, argv + argc);
-  if(args.size() != 2) {
-    std::cerr << "2 args required" << std::endl;
+  if(args.size() < 2) {
+    std::cerr << "at least 2 arguments required : " << args[0] << " <directory-path>" << std::endl;
     return 1;
   }
 
   const std::string& path = args[1];
 
   CompositeFilterPolicy compositeFilter;
+
+  for (size_t i = 0; i < args.size(); ++i) {
+    if (args[i] == "--name-contains" && i + 1 < args.size()) {
+        compositeFilter.addFilter(std::make_unique<NameContainsFilterPolicy>(args[++i]));
+    } else if (args[i] == "--ends-with" && i + 1 < args.size()) {
+        compositeFilter.addFilter(std::make_unique<ExtensionFilterPolicy>(args[++i]));
+    } else if (args[i] == "--no-hidden-files") {
+        compositeFilter.addFilter(std::make_unique<NoHiddenFilesFilterPolicy>());
+    }
+  }
   // compositeFilter.addFilter(std::make_unique<NameContainsFilterPolicy>(""));
   // compositeFilter.addFilter(std::make_unique<ExtensionFilterPolicy>(".css"));
   // compositeFilter.addFilter(std::make_unique<NoHiddenFilesFilterPolicy>());
