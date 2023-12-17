@@ -4,10 +4,13 @@
 #include <unordered_map>
 #include <set>
 #include <string>
+#include <mutex>
 
 #include "../Domain/domain.hpp"
 
 class DomainManager {
+  mutable std::mutex _mutex;
+
   std::unordered_map<std::string, std::set<Domain>> _domains;
   std::unordered_map<std::size_t, std::string> domainToFile;
   std::set<Domain> _unique_domains;

@@ -9,6 +9,8 @@
 #include "fstream"
 #include "filesystem"
 
+#include <chrono>
+
 #include "SeparationPolicy/separation_policies.hpp"
 #include "FileFilterPolicy/file_filter_policies.hpp"
 
@@ -41,18 +43,17 @@ int main(int argc, char* argv[]) {
         compositeFilter.addFilter(std::make_unique<NoHiddenFilesFilterPolicy>());
     }
   }
-  // compositeFilter.addFilter(std::make_unique<NameContainsFilterPolicy>(""));
-  // compositeFilter.addFilter(std::make_unique<ExtensionFilterPolicy>(".css"));
-  // compositeFilter.addFilter(std::make_unique<NoHiddenFilesFilterPolicy>());
 
   FileManager<std::string, BlankLineSeparationPolicy, CompositeFilterPolicy> 
     manager(path, std::move(compositeFilter));
+  //auto start = std::chrono::high_resolution_clock::now();
   manager.parseDomains();
+  //auto end = std::chrono::high_resolution_clock::now();
+  //std::cout << "Time taken to parse domains: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
 
   const auto& domain_manager = manager.getDomainManager();
-  const auto& domains = domain_manager.getDomains();
-  const auto& unique_domains = domain_manager.getUniqueDomains();
-
+  const auto& domains = domain_manager->getDomains();
+  const auto& unique_domains = domain_manager->getUniqueDomains();
 
   std::unordered_map<std::string, std::set<std::size_t>> file_sets;
   std::set<std::size_t> universe;
@@ -68,9 +69,10 @@ int main(int argc, char* argv[]) {
   SetCoverFast setCover(file_sets, universe);
 
   std::vector<std::string> cover = setCover.solve();
+
   for (const auto& file : cover) {
     std::cout << file << std::endl;
   }
-  std::cout << std::endl;
+
   return 0;
 }

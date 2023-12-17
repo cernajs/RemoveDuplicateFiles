@@ -28,7 +28,7 @@ struct NoHiddenFilesFilterPolicy : FileFilterPolicy {
     NoHiddenFilesFilterPolicy() = default;
 
     bool shouldProcessFile(const std::filesystem::path& filePath) override {
-        return filePath.filename().string().front() != '.';
+        return filePath.filename().native().front() != '.';
     }
 };
 
